@@ -8,6 +8,8 @@ onready var character_sprite = $Body/CharacterSprite
 var move_input : Vector2
 var facing := Vector2.RIGHT
 
+onready var animationPlayer = $AnimationPlayer
+
 ##func _input(event):
 	##if event.is_action_pressed("attack"):
 		##attack()
@@ -18,6 +20,10 @@ func _update_move_input():
 	move_input.x = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
 	move_input.y = -int(Input.is_action_pressed("move_up")) + int(Input.is_action_pressed("move_down"))
 	move_input = move_input.normalized()
+	if move_input == Vector2.ZERO:
+		animationPlayer.play("idle")
+	if move_input != Vector2.ZERO:
+		animationPlayer.play("run")
 
 func _update_facing():
 	if move_input != Vector2.ZERO:
