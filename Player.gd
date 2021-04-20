@@ -1,12 +1,17 @@
 extends Character
 class_name Player
 
+signal dash_finished()
+
 onready var hand_pivot = $HandPivot
 onready var hand = $HandPivot/Hand
 onready var character_sprite = $Body/CharacterSprite
+onready var dash_tween = $Tweens/DashTween
 
+var dash_velocity = 10 * 30
 var move_input : Vector2
 var facing := Vector2.RIGHT
+var dash_duration = 0.4
 
 onready var animationPlayer = $AnimationPlayer
 
@@ -15,6 +20,13 @@ onready var animationPlayer = $AnimationPlayer
 		##attack()
 	##elif event.is_action_pressed("secondary_attack"):
 		##secondary_attack()
+
+func aim_weapon():
+	var mouse_angle = (get_global_mouse_position() - hand_pivot.global_position).angle()
+	hand_pivot.rotation = mouse_angle
+	##if weapon != null:
+		##hand.transform = weapon.get_hand_transform(attack_modifier)
+		##hand_pivot.show_behind_parent = weapon.global_position.y < hand_pivot.global_position.y
 
 func _update_move_input():
 	move_input.x = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
@@ -35,3 +47,21 @@ func _update_facing():
 func apply_velocity():
 	var desired_velocity = move_input * move_speed_units * 16
 	velocity = velocity.linear_interpolate(desired_velocity, get_move_weight())
+
+func apply_dash_velocity():
+	velocity = velocity.linear_interpolate(Vector2.ZERO, 0.005)
+	
+func dash():
+	dash_tween.interpolate_property(body, "position:y", 0, \
+			dash_duration / 2.0, Tween.TRANS_SINE, Tween.EASE_OUT)
+	dash_tween.interpolate_property(body, "position:y", 0, \
+			dash_duration / 2.0, Tween.TRANS_SINE, Tween.EASE_IN, dash_duration / 2.0)
+	dash_tween.interpolate_callback(self, dash_duration, "_on_dash_finished")
+	dash_tween.start()
+	
+	##hitbox_collision.disabled = true
+	velocity = facing * dash_velocity
+
+func _on_dash_finished():
+	emit_signal("dash_finished")
+	##hitbox_collision.disabled = false

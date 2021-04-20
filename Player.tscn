@@ -72,3 +72,8 @@ shape = SubResource( 1 )
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/idle = SubResource( 2 )
 anims/run = SubResource( 3 )
+
+[node name="Tweens" type="Node" parent="."]
+
+[node name="DashTween" type="Tween" parent="Tweens"]
+[connection signal="dash_finished" from="." to="StateMachine" method="_on_Player_dash_finished"]
