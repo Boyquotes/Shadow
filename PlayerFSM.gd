@@ -13,6 +13,8 @@ func _input(event):
 		if state in [states.run]:
 			parent.dash()
 			set_state(states.dash)
+		if state == states.dash:
+			parent._on_DashTimer_timeout()
 
 func _state_logic(delta):
 	match state:

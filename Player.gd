@@ -11,7 +11,7 @@ onready var dash_tween = $Tweens/DashTween
 var dash_velocity = 10 * 30
 var move_input : Vector2
 var facing := Vector2.RIGHT
-var dash_duration = 0.4
+var dash_duration = 0.3
 
 onready var animationPlayer = $AnimationPlayer
 
@@ -52,6 +52,14 @@ func apply_dash_velocity():
 	velocity = velocity.linear_interpolate(Vector2.ZERO, 0.005)
 	
 func dash():
+	if move_input < Vector2.ZERO:
+		body.scale.x = -1
+		hand_pivot.scale.y = body.scale.x
+		animationPlayer.play("dash")
+		
+	else:
+		animationPlayer.play("dash")
+	
 	dash_tween.interpolate_property(body, "position:y", 0, \
 			dash_duration / 2.0, Tween.TRANS_SINE, Tween.EASE_OUT)
 	dash_tween.interpolate_property(body, "position:y", 0, \
@@ -63,5 +71,21 @@ func dash():
 	velocity = facing * dash_velocity
 
 func _on_dash_finished():
+	$DashTimer.stop()
 	emit_signal("dash_finished")
 	##hitbox_collision.disabled = false
+
+
+func _on_DashTimer_timeout():
+		$DashTimer.start()
+		var this_ghost = preload("res://Ghost.tscn").instance()
+		#give the ghost a parent
+		this_ghost.position = position
+		this_ghost.texture = $Body.texture
+		this_ghost.vframes = $Body.vframes
+		this_ghost.hframes = $Body.hframes
+		this_ghost.frame = $Body.frame
+		if move_input < Vector2.ZERO:
+			this_ghost.scale.x = -1
+			hand_pivot.scale.y = this_ghost.scale.x
+		get_parent().add_child(this_ghost)

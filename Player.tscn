@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://PlayerFSM.gd" type="Script" id=2]
@@ -8,8 +8,23 @@
 extents = Vector2( 5.38662, 3.76347 )
 
 [sub_resource type="Animation" id=2]
-resource_name = "idle"
-length = 0.3
+resource_name = "dash"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/path = NodePath("Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 7, 8, 9, 10 ]
+}
+
+[sub_resource type="Animation" id=3]
+length = 0.6
 loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Body:frame")
@@ -18,14 +33,13 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2 ]
+"values": [ 0, 0, 1, 1, 2, 2 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "run"
+[sub_resource type="Animation" id=4]
 length = 0.4
 loop = true
 tracks/0/type = "value"
@@ -49,8 +63,8 @@ script = ExtResource( 2 )
 
 [node name="Body" type="Sprite" parent="."]
 texture = ExtResource( 3 )
-hframes = 7
-frame = 3
+hframes = 11
+frame = 10
 
 [node name="StateLabel" type="Label" parent="."]
 margin_left = -20.25
@@ -70,10 +84,15 @@ position = Vector2( 0.446457, 6.24803 )
 shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/idle = SubResource( 2 )
-anims/run = SubResource( 3 )
+anims/dash = SubResource( 2 )
+anims/idle = SubResource( 3 )
+anims/run = SubResource( 4 )
 
 [node name="Tweens" type="Node" parent="."]
 
 [node name="DashTween" type="Tween" parent="Tweens"]
+
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.02
 [connection signal="dash_finished" from="." to="StateMachine" method="_on_Player_dash_finished"]
+[connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]
