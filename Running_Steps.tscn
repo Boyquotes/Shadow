@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Art/Character Sprites/Run_Part.png" type="Texture" id=1]
+[ext_resource path="res://Running_Steps.gd" type="Script" id=2]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0.0171674, 0.865854 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.463415 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=2]
+curve = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 1
+emission_sphere_radius = 1.0
+flag_disable_z = true
+direction = Vector3( -1, 0, 0 )
+spread = 3.91
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 1.0
+angular_velocity = 50.0
+angular_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+angle = 45.0
+angle_random = 1.0
+scale = 0.7
+scale_curve = SubResource( 2 )
+
+[node name="Running_Steps" type="Particles2D"]
+emitting = false
+amount = 10
+lifetime = 0.1
+one_shot = true
+randomness = 1.0
+process_material = SubResource( 3 )
+texture = ExtResource( 1 )
+script = ExtResource( 2 )

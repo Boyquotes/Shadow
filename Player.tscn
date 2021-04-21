@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://PlayerFSM.gd" type="Script" id=2]
 [ext_resource path="res://Art/Character Sprites/sPlayer_idle-Sheet.png" type="Texture" id=3]
+[ext_resource path="res://Running_Steps.tscn" type="PackedScene" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 5.38662, 3.76347 )
@@ -57,6 +58,7 @@ tracks/0/keys = {
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 1 )
+Running_Steps = ExtResource( 4 )
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource( 2 )
@@ -64,7 +66,7 @@ script = ExtResource( 2 )
 [node name="Body" type="Sprite" parent="."]
 texture = ExtResource( 3 )
 hframes = 11
-frame = 10
+frame = 7
 
 [node name="StateLabel" type="Label" parent="."]
 margin_left = -20.25
@@ -93,6 +95,9 @@ anims/run = SubResource( 4 )
 [node name="DashTween" type="Tween" parent="Tweens"]
 
 [node name="DashTimer" type="Timer" parent="."]
-wait_time = 0.02
+wait_time = 0.017
+
+[node name="ParticlePoint" type="Position2D" parent="."]
+position = Vector2( -3.32363, 7.09371 )
 [connection signal="dash_finished" from="." to="StateMachine" method="_on_Player_dash_finished"]
 [connection signal="timeout" from="DashTimer" to="." method="_on_DashTimer_timeout"]

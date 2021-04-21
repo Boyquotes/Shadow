@@ -3,12 +3,17 @@ class_name Player
 
 signal dash_finished()
 
+export(PackedScene) var Running_Steps
+var last_step = 0
+
 onready var hand_pivot = $HandPivot
 onready var hand = $HandPivot/Hand
 onready var character_sprite = $Body/CharacterSprite
 onready var dash_tween = $Tweens/DashTween
+onready var particlePosition = $ParticlePoint
+onready var particleScene = preload("res://Running_Steps.tscn")
 
-var dash_velocity = 10 * 30
+var dash_velocity = 10 * 35
 var move_input : Vector2
 var facing := Vector2.RIGHT
 var dash_duration = 0.3
@@ -35,7 +40,18 @@ func _update_move_input():
 	if move_input == Vector2.ZERO:
 		animationPlayer.play("idle")
 	if move_input != Vector2.ZERO:
+		
+		##THIS SECTION CONTROLS PLAYER FOOTSTEP PARTICLES
+		var running_step = Running_Steps.instance()
+		if body.frame == 3 || body.frame == 5:
+			running_step.global_position = Vector2(global_position.x - 4, global_position.y + 8)
+			if move_input < Vector2.ZERO:
+				running_step.global_position = Vector2(global_position.x + 4, global_position.y + 8)
+			running_step.emitting = true
+		get_parent().add_child(running_step)
+		
 		animationPlayer.play("run")
+		
 
 func _update_facing():
 	if move_input != Vector2.ZERO:
@@ -89,3 +105,5 @@ func _on_DashTimer_timeout():
 			this_ghost.scale.x = -1
 			hand_pivot.scale.y = this_ghost.scale.x
 		get_parent().add_child(this_ghost)
+		
+
