@@ -1,37 +1,92 @@
 extends Character
 class_name Player
 
+signal attacked()
+signal attack_finished()
 signal dash_finished()
 
 export(PackedScene) var Running_Steps
 var last_step = 0
 
+##Character Info
 onready var hand_pivot = $HandPivot
 onready var hand = $HandPivot/Hand
 onready var character_sprite = $Body/CharacterSprite
+
+#TWEENS
 onready var dash_tween = $Tweens/DashTween
+onready var attack_tween = $Tweens/AttackTween
+
+#Particles
 onready var particlePosition = $ParticlePoint
 onready var particleScene = preload("res://Running_Steps.tscn")
 
+#Movement
 var dash_velocity = 10 * 35
 var move_input : Vector2
 var facing := Vector2.RIGHT
 var dash_duration = 0.3
 
+#Attack/Weapon
+onready var attack_buffer = $AttackBuffer
+var weapon = null
+var attack_modifier = -1
+var attack_duration = 0.3 # TODO: Get from weapon
+var attack_angle_range = PI / 2.0
+var attack_direction = 1
+
+#Animations
 onready var animationPlayer = $AnimationPlayer
 
-##func _input(event):
-	##if event.is_action_pressed("attack"):
-		##attack()
+func _ready():
+	set_weapon(preload("res://Weapon.tscn").instance())
+	call_deferred("make_connections")
+
+func set_weapon(weapon):
+	if self.weapon != null:
+		self.weapon.queue_free()
+	
+	if weapon != null:
+		hand.add_child(weapon)
+		self.weapon = weapon
+		weapon.init(self)
+#		hitbox.add_exception(weapon.damage_area)
+		weapon.damage_area.collision_layer = CollisionLayers.ENEMY_HAZARD
+	
+	connect("attacked", weapon, "_on_attacked")
+	connect("attack_finished", weapon, "_on_attack_finished")
+
+func _input(event):
+	if event.is_action_pressed("attack"):
+		attack()
 	##elif event.is_action_pressed("secondary_attack"):
 		##secondary_attack()
 
 func aim_weapon():
 	var mouse_angle = (get_global_mouse_position() - hand_pivot.global_position).angle()
 	hand_pivot.rotation = mouse_angle
-	##if weapon != null:
-		##hand.transform = weapon.get_hand_transform(attack_modifier)
-		##hand_pivot.show_behind_parent = weapon.global_position.y < hand_pivot.global_position.y
+	if weapon != null:
+		hand.transform = weapon.get_hand_transform(attack_modifier)
+		hand_pivot.show_behind_parent = weapon.global_position.y < hand_pivot.global_position.y
+		
+func attack():
+	if !attack_tween.is_active() && state_machine.can_attack():
+		emit_signal("attacked")
+		attack_tween.interpolate_property(self, "attack_modifier", \
+			attack_modifier, -attack_modifier, attack_duration, \
+			Tween.TRANS_CUBIC, Tween.EASE_OUT)
+		attack_tween.interpolate_callback(self, attack_duration, "_on_attack_finished")
+		attack_tween.start()
+	else:
+		attack_buffer.start()
+		
+func _on_attack_finished():
+	emit_signal("attack_finished")
+	attack_tween.set_active(false)
+	attack_direction = -attack_direction
+	if !attack_buffer.is_stopped():
+		attack_buffer.stop()
+		attack()
 
 func _update_move_input():
 	move_input.x = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
@@ -68,6 +123,8 @@ func apply_dash_velocity():
 	velocity = velocity.linear_interpolate(Vector2.ZERO, 0.005)
 	
 func dash():
+	weapon.hide()
+	hand.hide()
 	if move_input < Vector2.ZERO:
 		body.scale.x = -1
 		hand_pivot.scale.y = body.scale.x
@@ -88,6 +145,8 @@ func dash():
 
 func _on_dash_finished():
 	$DashTimer.stop()
+	weapon.show()
+	hand.show()
 	emit_signal("dash_finished")
 	##hitbox_collision.disabled = false
 

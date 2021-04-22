@@ -14,6 +14,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Character.gd"
 }, {
+"base": "Node",
+"class": "CollisionLayers",
+"language": "GDScript",
+"path": "res://CollisionLayers.gd"
+}, {
+"base": "Area2D",
+"class": "DamageArea",
+"language": "GDScript",
+"path": "res://DamageArea.gd"
+}, {
 "base": "Character",
 "class": "Player",
 "language": "GDScript",
@@ -26,6 +36,8 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Character": "",
+"CollisionLayers": "",
+"DamageArea": "",
 "Player": "",
 "StateMachine": ""
 }
@@ -68,6 +80,15 @@ dash={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
  ]
 }
+attack={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+2d_physics/layer_12="ENEMY_HAZARD"
 
 [rendering]
 

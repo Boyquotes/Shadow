@@ -23,6 +23,7 @@ func _state_logic(delta):
 			parent._update_facing()
 			parent.apply_velocity()
 			parent.apply_movement()
+			parent.aim_weapon()
 		states.dash:
 			parent.apply_dash_velocity()
 			parent.apply_movement()
@@ -44,6 +45,9 @@ func _get_transition(delta):
 func _enter_state(new_state, old_state):
 	var state_label = parent.get_node("StateLabel")
 	state_label.text = states.keys()[new_state]
+	
+func can_attack():
+	return [states.idle, states.run].has(state)
 
 func _exit_state(old_state, new_state):
 	pass

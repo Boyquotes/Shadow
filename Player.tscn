@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://PlayerFSM.gd" type="Script" id=2]
 [ext_resource path="res://Art/Character Sprites/sPlayer_idle-Sheet.png" type="Texture" id=3]
 [ext_resource path="res://Running_Steps.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Art/Character Sprites/hand.png" type="Texture" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 5.38662, 3.76347 )
@@ -66,7 +67,6 @@ script = ExtResource( 2 )
 [node name="Body" type="Sprite" parent="."]
 texture = ExtResource( 3 )
 hframes = 11
-frame = 7
 
 [node name="StateLabel" type="Label" parent="."]
 margin_left = -20.25
@@ -77,13 +77,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HandPivot" type="Position2D" parent="."]
-
-[node name="Sprite" type="Sprite" parent="HandPivot"]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0.446457, 6.24803 )
 shape = SubResource( 1 )
+
+[node name="HandPivot" type="Position2D" parent="."]
+position = Vector2( 1, 4 )
+
+[node name="Hand" type="Sprite" parent="HandPivot"]
+position = Vector2( 6, 7.15256e-07 )
+scale = Vector2( 0.8, 0.8 )
+texture = ExtResource( 5 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/dash = SubResource( 2 )
@@ -94,8 +98,14 @@ anims/run = SubResource( 4 )
 
 [node name="DashTween" type="Tween" parent="Tweens"]
 
+[node name="AttackTween" type="Tween" parent="Tweens"]
+
 [node name="DashTimer" type="Timer" parent="."]
 wait_time = 0.017
+
+[node name="AttackBuffer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
 
 [node name="ParticlePoint" type="Position2D" parent="."]
 position = Vector2( -3.32363, 7.09371 )
