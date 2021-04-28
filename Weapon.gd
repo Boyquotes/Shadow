@@ -2,6 +2,9 @@ extends Node2D
 
 onready var damage_area = $DamageArea
 onready var damage_collision = $DamageArea/CollisionShape2D
+onready var slash_collision = $DamageArea/CollisionPolygon2D
+onready var Ani_Slash = $Slash/AnimationPlayer
+onready var SlashSprite = $Slash
 
 export var radius := 8.0
 
@@ -23,7 +26,13 @@ func get_swing_transform(attack_modifier) -> Transform2D:
 	return Transform2D(hand_angle, pos)
 
 func _on_attacked():
+	SlashSprite.show()
+	Ani_Slash.play("Slash")
+	##CHECK COLLISION ON SLASH LATER!!!
 	damage_collision.disabled = false
+	slash_collision.set_disabled(false) # enable
 
 func _on_attack_finished():
+	SlashSprite.hide()
 	damage_collision.disabled = true
+	slash_collision.set_disabled(true)  # disable

@@ -82,8 +82,15 @@ func attack():
 		
 func _on_attack_finished():
 	emit_signal("attack_finished")
+	weapon.scale
 	attack_tween.set_active(false)
 	attack_direction = -attack_direction
+	
+	if attack_direction == 1:
+		weapon.scale.y = 1
+	if attack_direction == -1:
+		weapon.scale.y = -1
+		
 	if !attack_buffer.is_stopped():
 		attack_buffer.stop()
 		attack()

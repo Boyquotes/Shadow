@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Weapon.gd" type="Script" id=1]
 [ext_resource path="res://DamageArea.gd" type="Script" id=2]
 [ext_resource path="res://Art/Character Sprites/Test_Sword.png" type="Texture" id=3]
+[ext_resource path="res://Slash.tscn" type="PackedScene" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 8, 3 )
@@ -15,10 +16,19 @@ position = Vector2( 8, -1 )
 rotation = 1.5708
 texture = ExtResource( 3 )
 
+[node name="Slash" parent="." instance=ExtResource( 4 )]
+position = Vector2( 17, -5 )
+rotation = 0.0
+scale = Vector2( 1, -1 )
+
 [node name="DamageArea" type="Area2D" parent="."]
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
 position = Vector2( 8, -1 )
 shape = SubResource( 1 )
+disabled = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="DamageArea"]
+polygon = PoolVector2Array( -3, -18, 12, -17, 22, -10, 22, 1, 22, 3, 31, 12, 38, 6, 41, 0, 41, -7, 37, -13, 31, -19, 19, -23, 2, -22, -5, -19 )
 disabled = true
