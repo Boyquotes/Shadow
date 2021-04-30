@@ -17,6 +17,7 @@ rotation = 1.5708
 texture = ExtResource( 3 )
 
 [node name="Slash" parent="." instance=ExtResource( 4 )]
+visible = false
 position = Vector2( 17, -5 )
 rotation = 0.0
 scale = Vector2( 1, -1 )

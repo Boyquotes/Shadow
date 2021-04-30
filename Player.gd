@@ -1,9 +1,11 @@
 extends Character
 class_name Player
 
-signal attacked()
-signal attack_finished()
-signal dash_finished()
+signal attacked
+signal attacked2
+signal attack_finished
+signal attack_finished2
+signal dash_finished
 
 export(PackedScene) var Running_Steps
 var last_step = 0
@@ -11,7 +13,6 @@ var last_step = 0
 ##Character Info
 onready var hand_pivot = $HandPivot
 onready var hand = $HandPivot/Hand
-onready var character_sprite = $Body/CharacterSprite
 
 #TWEENS
 onready var dash_tween = $Tweens/DashTween
@@ -35,12 +36,13 @@ var attack_duration = 0.3 # TODO: Get from weapon
 var attack_angle_range = PI / 2.0
 var attack_direction = 1
 
+var is_projectile_firing = false
+
 #Animations
 onready var animationPlayer = $AnimationPlayer
 
 func _ready():
 	set_weapon(preload("res://Weapon.tscn").instance())
-	call_deferred("make_connections")
 
 func set_weapon(weapon):
 	if self.weapon != null:
@@ -55,12 +57,14 @@ func set_weapon(weapon):
 	
 	connect("attacked", weapon, "_on_attacked")
 	connect("attack_finished", weapon, "_on_attack_finished")
+	connect("attacked2", weapon, "_on_attacked2")
+	connect("attacked_finished2", weapon, "on_attacked_finished2")
 
 func _input(event):
 	if event.is_action_pressed("attack"):
 		attack()
-	##elif event.is_action_pressed("secondary_attack"):
-		##secondary_attack()
+	elif event.is_action_pressed("secondary_attack"):
+		secondary_attack()
 
 func aim_weapon():
 	var mouse_angle = (get_global_mouse_position() - hand_pivot.global_position).angle()
@@ -80,6 +84,23 @@ func attack():
 	else:
 		attack_buffer.start()
 		
+func secondary_attack():
+	if !attack_tween.is_active() && state_machine.can_attack() && !is_projectile_firing:
+		is_projectile_firing = true
+		emit_signal("attacked2")
+		attack_tween.interpolate_property(self, "attack_modifier", \
+			attack_modifier, -attack_modifier, attack_duration, \
+			Tween.TRANS_CUBIC, Tween.EASE_OUT)
+		attack_tween.interpolate_callback(self, attack_duration, "_on_attack_finished2")
+		attack_tween.start()
+		
+		var swipe_instance = load("res://Swipe.tscn").instance()
+		swipe_instance.shoot(get_global_mouse_position(), weapon.global_position)
+		owner.add_child(swipe_instance)
+		
+	else:
+		attack_buffer.start()
+		
 func _on_attack_finished():
 	emit_signal("attack_finished")
 	weapon.scale
@@ -94,6 +115,22 @@ func _on_attack_finished():
 	if !attack_buffer.is_stopped():
 		attack_buffer.stop()
 		attack()
+		
+func _on_attack_finished2():
+	emit_signal("attack_finished2")
+	weapon.scale
+	attack_tween.set_active(false)
+	is_projectile_firing = false
+	attack_direction = -attack_direction
+	
+	if attack_direction == 1:
+		weapon.scale.y = 1
+	if attack_direction == -1:
+		weapon.scale.y = -1
+		
+	if !attack_buffer.is_stopped():
+		attack_buffer.stop()
+		secondary_attack()
 
 func _update_move_input():
 	move_input.x = -int(Input.is_action_pressed("move_left")) + int(Input.is_action_pressed("move_right"))
@@ -172,4 +209,3 @@ func _on_DashTimer_timeout():
 			hand_pivot.scale.y = this_ghost.scale.x
 		get_parent().add_child(this_ghost)
 		
-

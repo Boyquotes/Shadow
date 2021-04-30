@@ -1,0 +1,56 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Art/Character Sprites/Ranged_swipe-Sheet.png" type="Texture" id=1]
+[ext_resource path="res://Swipe.gd" type="Script" id=2]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Swipe"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.9 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "delete_projectile"
+} ]
+}
+
+[node name="Swipe" type="Area2D"]
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+hframes = 9
+frame = 8
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -8.89532, -31.95, 4.43391, -31.5992, 14.1853, -27.1094, 21.2007, -21.2165, 27.7952, -13.4294, 31.0924, -0.170307, 29.3385, 11.3349, 21.8321, 20.6654, 18.605, 24.3836, 9.06407, 29.4346, 0.785912, 31.89, -8.82517, 31.9602, -8.75502, 30.1362, 5.27576, 24.0328, 12.4315, 14.7023, 15.3779, -0.240459, 10.2567, -17.358, 2.4696, -25.6362, -8.96548, -30.0559 )
+
+[node name="LifeTime" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+playback_speed = 2.0
+anims/Swipe = SubResource( 1 )
+[connection signal="body_entered" from="." to="." method="_on_Swipe_body_entered"]
+[connection signal="timeout" from="LifeTime" to="." method="_on_LifeTime_timeout"]

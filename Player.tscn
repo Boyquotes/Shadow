@@ -69,6 +69,7 @@ texture = ExtResource( 3 )
 hframes = 11
 
 [node name="StateLabel" type="Label" parent="."]
+visible = false
 margin_left = -20.25
 margin_top = -24.25
 margin_right = 19.75

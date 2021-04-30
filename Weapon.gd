@@ -1,10 +1,22 @@
 extends Node2D
 
+signal attacked
+signal attacked2
+signal attack_finished
+signal attacked_finished2
+signal dash_finished
+
+#Weapon Variables
 onready var damage_area = $DamageArea
 onready var damage_collision = $DamageArea/CollisionShape2D
+
+#Slash Variables
 onready var slash_collision = $DamageArea/CollisionPolygon2D
 onready var Ani_Slash = $Slash/AnimationPlayer
 onready var SlashSprite = $Slash
+
+#Swipe Variables
+
 
 export var radius := 8.0
 
@@ -30,9 +42,15 @@ func _on_attacked():
 	Ani_Slash.play("Slash")
 	##CHECK COLLISION ON SLASH LATER!!!
 	damage_collision.disabled = false
-	slash_collision.set_disabled(false) # enable
+	slash_collision.disabled = false # enable
 
 func _on_attack_finished():
 	SlashSprite.hide()
 	damage_collision.disabled = true
-	slash_collision.set_disabled(true)  # disable
+	slash_collision.disabled = true # disable
+	
+func _on_attacked2():
+	pass
+	
+func _on_attack_finished2():
+	pass

@@ -1,7 +1,5 @@
 extends "res://CharacterFSM.gd"
 
-onready var animationPlayer = $AnimationPlayer
-
 func _ready():
 	add_state("idle")
 	add_state("run")
