@@ -15,9 +15,6 @@ onready var slash_collision = $DamageArea/CollisionPolygon2D
 onready var Ani_Slash = $Slash/AnimationPlayer
 onready var SlashSprite = $Slash
 
-#Swipe Variables
-
-
 export var radius := 8.0
 
 func init(attacker):

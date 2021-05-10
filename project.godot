@@ -12,27 +12,27 @@ _global_script_classes=[ {
 "base": "KinematicBody2D",
 "class": "Character",
 "language": "GDScript",
-"path": "res://Character.gd"
+"path": "res://Scripts/Character.gd"
 }, {
 "base": "Node",
 "class": "CollisionLayers",
 "language": "GDScript",
-"path": "res://CollisionLayers.gd"
+"path": "res://Scripts/CollisionLayers.gd"
 }, {
 "base": "Area2D",
 "class": "DamageArea",
 "language": "GDScript",
-"path": "res://DamageArea.gd"
+"path": "res://Scripts/DamageArea.gd"
 }, {
 "base": "Character",
 "class": "Player",
 "language": "GDScript",
-"path": "res://Player.gd"
+"path": "res://Scripts/Player.gd"
 }, {
 "base": "Node",
 "class": "StateMachine",
 "language": "GDScript",
-"path": "res://StateMachine.gd"
+"path": "res://StateMachines/StateMachine.gd"
 } ]
 _global_script_class_icons={
 "Character": "",
@@ -45,7 +45,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Shadow"
-run/main_scene="res://Main World.tscn"
+run/main_scene="res://Worlds/Main World.tscn"
 
 [display]
 

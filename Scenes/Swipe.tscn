@@ -1,7 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Art/Character Sprites/Ranged_swipe-Sheet.png" type="Texture" id=1]
-[ext_resource path="res://Swipe.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Swipe.gd" type="Script" id=2]
+
 
 [sub_resource type="Animation" id=1]
 resource_name = "Swipe"
@@ -25,15 +26,19 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0.9 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray( 0.1, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
 "values": [ {
+"args": [  ],
+"method": "_collision_on"
+}, {
 "args": [  ],
 "method": "delete_projectile"
 } ]
 }
 
 [node name="Swipe" type="Area2D"]
+scale = Vector2( 0.7, 0.7 )
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -42,15 +47,10 @@ hframes = 9
 frame = 8
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( -8.89532, -31.95, 4.43391, -31.5992, 14.1853, -27.1094, 21.2007, -21.2165, 27.7952, -13.4294, 31.0924, -0.170307, 29.3385, 11.3349, 21.8321, 20.6654, 18.605, 24.3836, 9.06407, 29.4346, 0.785912, 31.89, -8.82517, 31.9602, -8.75502, 30.1362, 5.27576, 24.0328, 12.4315, 14.7023, 15.3779, -0.240459, 10.2567, -17.358, 2.4696, -25.6362, -8.96548, -30.0559 )
-
-[node name="LifeTime" type="Timer" parent="."]
-wait_time = 0.3
-one_shot = true
-autostart = true
+polygon = PoolVector2Array( 6.03327, -27.4029, 4.43391, -31.5992, 14.1853, -27.1094, 21.2007, -21.2165, 27.7952, -13.4294, 31.0924, -0.170307, 29.3385, 11.3349, 21.8321, 20.6654, 18.605, 24.3836, 9.06407, 29.4346, 6.23371, 30.8247, 9.64118, 23.3083, 12.1467, 18.6982, 12.5476, 16.2929, 14.5519, 6.87224, 15.3779, -0.240459, 14.1511, -9.16291, 10.2567, -17.358, 8.7392, -20.7884, 7.33612, -24.4965 )
+disabled = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 playback_speed = 2.0
 anims/Swipe = SubResource( 1 )
 [connection signal="body_entered" from="." to="." method="_on_Swipe_body_entered"]
-[connection signal="timeout" from="LifeTime" to="." method="_on_LifeTime_timeout"]

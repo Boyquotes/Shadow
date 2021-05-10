@@ -1,4 +1,4 @@
-extends "res://CharacterFSM.gd"
+extends "res://StateMachines/CharacterFSM.gd"
 
 func _ready():
 	add_state("idle")
@@ -21,11 +21,9 @@ func _state_logic(delta):
 			parent._update_facing()
 			parent.apply_velocity()
 			parent.apply_movement()
-			parent.aim_weapon()
 		states.dash:
 			parent.apply_dash_velocity()
 			parent.apply_movement()
-			parent.aim_weapon()
 		_:
 			parent.apply_stop_velocity()
 			parent.apply_movement()
