@@ -8,7 +8,7 @@ export(PackedScene) var Running_Steps
 var last_step = 0
 
 ##Character Info
-
+onready var statemachine = $StateMachine
 
 #TWEENS
 onready var dash_tween = $Tweens/DashTween
@@ -48,9 +48,9 @@ func set_weapon(weapon):
 
 
 func _input(event):
-	if event.is_action_pressed("attack"):
+	if event.is_action_pressed("attack") && statemachine.can_attack():
 		weapon.attack()
-	elif event.is_action_pressed("secondary_attack"):
+	elif event.is_action_pressed("secondary_attack") && statemachine.can_attack():
 		weapon.secondary_attack()
 
 func _update_move_input():

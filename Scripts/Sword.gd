@@ -4,7 +4,6 @@ signal attacked
 signal attacked2
 signal attack_finished
 signal attack_finished2
-signal dash_finished
 
 #Weapon Variables
 onready var damage_area = $HandPivot/Hand/Sprite/DamageArea
@@ -21,19 +20,13 @@ onready var secondary_attack_buffer = $SecondaryAttackBuffer
 onready var sword_sprite = $HandPivot/Hand/Sprite
 
 #Slash Variables
-onready var slash_collision = $HandPivot/Hand/Sprite/DamageArea/CollisionPolygon2D
-onready var Ani_Slash = $HandPivot/Hand/Sprite/Slash/AnimationPlayer
-onready var SlashSprite = $HandPivot/Hand/Sprite/Slash
 var is_projectile_firing = false
 
 #Swipe Variables
 export var radius := 8.0
 
 func _ready():
-	connect("attacked", self, "_on_attacked")
-	connect("attack_finished", self, "_on_attack_finished")
-	connect("attacked2", self, "_on_attacked2")
-	connect("attacked_finished2", self, "on_attacked_finished2")
+	pass
 	
 func aim_weapon():
 	var mouse_angle = (get_global_mouse_position() - hand_pivot.global_position).angle()
@@ -50,6 +43,11 @@ func attack():
 			Tween.TRANS_CUBIC, Tween.EASE_OUT)
 		attack_tween.interpolate_callback(self, attack_duration, "_on_attack_finished")
 		attack_tween.start()
+		
+		var slash_instance = load("res://Scenes/Slash.tscn").instance()
+		slash_instance.shoot(get_global_mouse_position(), hand_pivot.global_position)
+		get_parent().owner.add_child(slash_instance)
+		
 	else:
 		attack_buffer.start()
 		
@@ -71,12 +69,10 @@ func secondary_attack():
 		secondary_attack_buffer.start()
 		
 func _on_attack_finished():
-	self.scale
+	emit_signal("attack_finished")
 	attack_tween.set_active(false)
 	attack_direction = -attack_direction
-	SlashSprite.hide()
 	damage_collision.disabled = true
-	slash_collision.disabled = true # disable
 	
 	if attack_direction == 1:
 		sword_sprite.scale.x = 1
@@ -89,7 +85,6 @@ func _on_attack_finished():
 		
 func _on_attack_finished2():
 	emit_signal("attack_finished2")
-	self.scale
 	attack_tween.set_active(false)
 	is_projectile_firing = false
 	attack_direction = -attack_direction
@@ -121,11 +116,7 @@ func get_swing_transform(attack_modifier) -> Transform2D:
 	return Transform2D(hand_angle, pos)
 
 func _on_attacked():
-	SlashSprite.show()
-	Ani_Slash.play("Slash")
-	##CHECK COLLISION ON SLASH LATER!!!
 	damage_collision.disabled = false
-	slash_collision.disabled = false # enable
 
 func _on_attacked2():
 	pass

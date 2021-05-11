@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Art/Character Sprites/Slash_Test-Sheet.png" type="Texture" id=1]
+[ext_resource path="res://Scenes/Slash.gd" type="Script" id=2]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Slash"
@@ -17,13 +18,38 @@ tracks/0/keys = {
 "update": 1,
 "values": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
 }
+tracks/1/type = "method"
+tracks/1/path = NodePath("..")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.03, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [  ],
+"method": "_collision_on"
+}, {
+"args": [  ],
+"method": "delete_projectile"
+} ]
+}
 
-[node name="Slash" type="Sprite"]
-position = Vector2( 32, -2 )
-rotation = 1.5708
+[node name="Area2D" type="Area2D"]
+script = ExtResource( 2 )
+
+[node name="Slash" type="Sprite" parent="."]
+position = Vector2( 27.9166, 0.250279 )
+scale = Vector2( 0.7, 0.7 )
 texture = ExtResource( 1 )
 hframes = 9
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-playback_speed = 3.0
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Slash"]
+playback_speed = 6.0
 anims/Slash = SubResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2( 10, 1 )
+scale = Vector2( 0.7, 0.7 )
+polygon = PoolVector2Array( 6.80871, -25.1145, 16.6531, -28.2848, 30.1683, -28.1179, 42.6824, -26.6162, 58.4501, -11.5159, 58.5336, 3.58441, 51.1085, 17.0162, 29.5843, 25.1921, 7.89326, 22.5224, 5.72416, 18.0173, 20.5742, 15.8482, 28.7501, 11.51, 39.095, 5.67009, 42.0984, -1.83836, 38.3442, -12.0999, 27.5821, -16.9387, 16.9034, -21.2769, 4.6396, -22.0277 )
