@@ -38,32 +38,27 @@ func aim_weapon():
 func attack():
 	if !attack_tween.is_active():
 		emit_signal("attacked")
+		if !is_projectile_firing:
+			is_projectile_firing = true
 		attack_tween.interpolate_property(self, "attack_modifier", \
 			attack_modifier, -attack_modifier, attack_duration, \
 			Tween.TRANS_CUBIC, Tween.EASE_OUT)
 		attack_tween.interpolate_callback(self, attack_duration, "_on_attack_finished")
 		attack_tween.start()
 		
-		var slash_instance = load("res://Scenes/Slash.tscn").instance()
-		slash_instance.shoot(get_global_mouse_position(), hand_pivot.global_position)
-		get_parent().owner.add_child(slash_instance)
-		
 	else:
 		attack_buffer.start()
 		
 func secondary_attack():
-	if !attack_tween.is_active() && !is_projectile_firing:
-		is_projectile_firing = true
+	if !attack_tween.is_active():
 		emit_signal("attacked2")
+		if !is_projectile_firing:
+			is_projectile_firing = true
 		attack_tween.interpolate_property(self, "attack_modifier", \
 			attack_modifier, -attack_modifier, attack_duration, \
 			Tween.TRANS_CUBIC, Tween.EASE_OUT)
 		attack_tween.interpolate_callback(self, attack_duration, "_on_attack_finished2")
 		attack_tween.start()
-		
-		var swipe_instance = load("res://Scenes/Swipe.tscn").instance()
-		swipe_instance.shoot(get_global_mouse_position(), self.global_position)
-		get_parent().owner.add_child(swipe_instance)
 		
 	else:
 		secondary_attack_buffer.start()
@@ -71,6 +66,7 @@ func secondary_attack():
 func _on_attack_finished():
 	emit_signal("attack_finished")
 	attack_tween.set_active(false)
+	is_projectile_firing = false
 	attack_direction = -attack_direction
 	damage_collision.disabled = true
 	
@@ -88,6 +84,7 @@ func _on_attack_finished2():
 	attack_tween.set_active(false)
 	is_projectile_firing = false
 	attack_direction = -attack_direction
+	damage_collision.disabled = true
 	
 	if attack_direction == 1:
 		sword_sprite.scale.x = 1

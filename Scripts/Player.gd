@@ -130,4 +130,3 @@ func _on_DashTimer_timeout():
 			this_ghost.scale.x = -1
 			weapon.hand_pivot.scale.y = this_ghost.scale.x
 		get_parent().add_child(this_ghost)
-		
